@@ -1,68 +1,67 @@
-import { useState } from "react";
-import { motion } from "framer-motion";
-import { Search, SlidersHorizontal, TrendingUp, Sparkles, Flame } from "lucide-react";
-import { AgentCard, type Agent } from "../components/AgentCard";
-
+import { 
+  Search, SlidersHorizontal, TrendingUp, Sparkles, Flame,
+  Coins, Hourglass, Scroll, Scale, Map, Feather, LineChart, Mail // New icons
+} from "lucide-react";
 const AGENTS: Agent[] = [
   {
-    id: "1", name: "Refund Finder",
-    description: "Automatically scans your purchase history, identifies eligible refunds, and drafts claim emails to send on your behalf.",
-    category: "Finance", rating: 4.9, reviews: 2847, users: "12.4k", price: "15",
-    icon: "💰", color: "#34d399", glow: "#34d399",
-    tags: ["Email", "Finance", "Automation"], featured: true,
+    id: "1", name: "Gringotts Auditor",
+    description: "Scours your vault ledgers and transaction history to identify discrepancies. Automatically drafts goblin-approved Ministry claim forms.",
+    category: "Wealth", rating: 4.9, reviews: 2847, users: "12.4k", price: "15",
+    icon: Coins, color: "#34d399", glow: "#34d399",
+    tags: ["Ledger", "Wealth", "Automation"], featured: true,
   },
   {
-    id: "2", name: "Syllabus AI",
-    description: "Parses any course syllabus and creates a personalized study schedule with smart reminders and resource recommendations.",
-    category: "Education", rating: 4.8, reviews: 1923, users: "8.2k", price: "10",
-    icon: "📚", color: "#818cf8", glow: "#818cf8",
-    tags: ["Calendar", "Study", "Planning"], featured: true,
+    id: "2", name: "Time-Turner Scheduler",
+    description: "Parses your academic syllabus and weaves a temporal study schedule. Ensures you never miss overlapping Arithmancy and Potions lectures.",
+    category: "Academia", rating: 4.8, reviews: 1923, users: "8.2k", price: "10",
+    icon: Hourglass, color: "#818cf8", glow: "#818cf8",
+    tags: ["Temporal", "Study", "Planning"], featured: true,
   },
   {
-    id: "3", name: "Code Reviewer",
-    description: "Reviews your pull requests for bugs, security issues, and code quality. Leaves actionable, opinionated GitHub comments.",
-    category: "Dev Tools", rating: 4.7, reviews: 3102, users: "22.1k", price: "20",
-    icon: "🔍", color: "#58a6ff", glow: "#58a6ff",
-    tags: ["GitHub", "Code", "Security"],
+    id: "3", name: "Rune Decipherer",
+    description: "Scrutinizes your Ancient Runes translations for logical flaws and curses. Leaves opinionated, actionable notes in the margins.",
+    category: "Spellcraft", rating: 4.7, reviews: 3102, users: "22.1k", price: "20",
+    icon: Scroll, color: "#58a6ff", glow: "#58a6ff",
+    tags: ["Runes", "Review", "Safety"],
   },
   {
-    id: "4", name: "Legal Eagle",
-    description: "Reads contracts and legal documents, highlights risky clauses, and generates a plain-English summary for non-lawyers.",
-    category: "Legal", rating: 4.6, reviews: 891, users: "3.4k", price: "35",
-    icon: "⚖️", color: "#f59e0b", glow: "#f59e0b",
-    tags: ["PDF", "Contracts", "Analysis"],
+    id: "4", name: "Wizengamot Advisor",
+    description: "Reads magical contracts and binding vows, highlighting risky clauses. Generates a plain-English summary for non-lawyers.",
+    category: "Ministry Law", rating: 4.6, reviews: 891, users: "3.4k", price: "35",
+    icon: Scale, color: "#f59e0b", glow: "#f59e0b",
+    tags: ["Parchment", "Contracts", "Analysis"],
   },
   {
-    id: "5", name: "Travel Scout",
-    description: "Finds the best flight deals, hotels, and itineraries based on your preferences. Books directly when you approve.",
-    category: "Travel", rating: 4.8, reviews: 1456, users: "9.7k", price: "12",
-    icon: "✈️", color: "#06b6d4", glow: "#06b6d4",
-    tags: ["Booking", "Flights", "Hotels"],
+    id: "5", name: "Floo Network Planner",
+    description: "Finds the fastest Floo connections, Portkey schedules, and safe inns based on your preferences. Books instantly.",
+    category: "Transport", rating: 4.8, reviews: 1456, users: "9.7k", price: "12",
+    icon: Map, color: "#06b6d4", glow: "#06b6d4",
+    tags: ["Booking", "Floo", "Portkey"],
   },
   {
-    id: "6", name: "PR Ghostwriter",
-    description: "Drafts professional press releases, media pitches, and LinkedIn posts based on your company news and target publications.",
-    category: "Marketing", rating: 4.5, reviews: 567, users: "4.1k", price: "25",
-    icon: "✍️", color: "#ec4899", glow: "#ec4899",
-    tags: ["Writing", "PR", "LinkedIn"],
+    id: "6", name: "Quick-Quotes Quill",
+    description: "Drafts professional Daily Prophet press releases and owl-post pitches based on your enterprise news and target audience.",
+    category: "Prophet Press", rating: 4.5, reviews: 567, users: "4.1k", price: "25",
+    icon: Feather, color: "#ec4899", glow: "#ec4899",
+    tags: ["Writing", "PR", "Quill"],
   },
   {
-    id: "7", name: "DataWhiz",
-    description: "Analyzes CSV/Excel files, generates insights, creates professional charts, and writes an executive summary report.",
-    category: "Analytics", rating: 4.7, reviews: 2104, users: "15.6k", price: "18",
-    icon: "📊", color: "#a78bfa", glow: "#a78bfa",
-    tags: ["CSV", "Charts", "Reports"],
+    id: "7", name: "Arithmancy Analyzer",
+    description: "Analyzes complex numerical prophecies, generates visual insights, and writes an executive summary report for the Department of Mysteries.",
+    category: "Divination", rating: 4.7, reviews: 2104, users: "15.6k", price: "18",
+    icon: LineChart, color: "#a78bfa", glow: "#a78bfa",
+    tags: ["Numbers", "Charts", "Reports"],
   },
   {
-    id: "8", name: "Cold Outreach Pro",
-    description: "Researches prospects, personalizes cold emails using LinkedIn/web data, and sends sequenced follow-ups automatically.",
-    category: "Sales", rating: 4.4, reviews: 789, users: "5.2k", price: "22",
-    icon: "📧", color: "#f97316", glow: "#f97316",
-    tags: ["Email", "LinkedIn", "CRM"], featured: true,
+    id: "8", name: "Owl Post Automator",
+    description: "Researches prospects and personalizes enchanted parchment letters. Automatically dispatches sequenced follow-up owls.",
+    category: "Commerce", rating: 4.4, reviews: 789, users: "5.2k", price: "22",
+    icon: Mail, color: "#f97316", glow: "#f97316",
+    tags: ["Owls", "Network", "Commerce"], featured: true,
   },
 ];
 
-const CATEGORIES = ["All", "Finance", "Education", "Dev Tools", "Legal", "Travel", "Marketing", "Analytics", "Sales"];
+const CATEGORIES = ["All", "Wealth", "Academia", "Spellcraft", "Ministry Law", "Transport", "Prophet Press", "Divination", "Commerce"];
 
 export function Marketplace() {
   const [search, setSearch] = useState("");
@@ -170,13 +169,13 @@ export function Marketplace() {
       <div className="max-w-screen-xl mx-auto px-6 pt-14 pb-10 text-center relative z-10">
         <div className="flex items-center justify-center gap-2.5 mb-5">
           <span className="w-2 h-2 rounded-full" style={{ background: "#34d399", boxShadow: "0 0 10px rgba(52,211,153,0.8)" }} />
-          <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(52,211,153,0.65)" }}>AI Marketplace</span>
+          <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(52,211,153,0.65)" }}>The Apothecary</span>
         </div>
         <h1 className="font-display text-5xl font-black text-white tracking-tight leading-[1.05] mb-5 text-emerge">
-          Find the perfect AI agent<br />for any task
+          Find the perfect enchantment<br />for any task
         </h1>
         <p className="text-base leading-relaxed max-w-lg mx-auto" style={{ color: "rgba(230,237,243,0.45)" }}>
-          Browse 2,400+ specialized agents. Hire in seconds, pay per result.
+          Browse 2,400+ specialized familiars and charms. Hire in seconds, pay per result in Galleons.
         </p>
       </div>
 

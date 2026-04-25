@@ -1,3 +1,7 @@
+import {
+  CheckCircle2, Clock, AlertCircle, TrendingUp, Play, Pause, RefreshCw, Plus,
+  CircleDollarSign, Search, BookOpen // <-- Add these new icons
+} from "lucide-react";
 import { motion } from "framer-motion";
 import {
   CheckCircle2, Clock, AlertCircle, TrendingUp, Play, Pause, RefreshCw, Plus,
@@ -5,20 +9,26 @@ import {
 
 const MY_AGENTS = [
   {
-    id: "1", name: "Refund Finder", icon: "💰", color: "#34d399",
+    id: "1", name: "Refund Finder", 
+    icon: CircleDollarSign, // <-- Replaced "💰"
+    color: "#34d399",
     status: "completed",
     task: "Scanned 3 months of Amazon orders",
     result: "Found $142 in potential refunds",
     completedAt: "2 hours ago", nitSpent: "15",
   },
   {
-    id: "2", name: "Code Reviewer", icon: "🔍", color: "#58a6ff",
+    id: "2", name: "Code Reviewer", 
+    icon: Search, // <-- Replaced "🔍"
+    color: "#58a6ff",
     status: "running",
     task: "Reviewing PR #247 in agenthub/core",
     result: null, completedAt: null, nitSpent: "20",
   },
   {
-    id: "3", name: "Syllabus AI", icon: "📚", color: "#818cf8",
+    id: "3", name: "Syllabus AI", 
+    icon: BookOpen, // <-- Replaced "📚"
+    color: "#818cf8",
     status: "pending",
     task: "Creating study plan for CS401",
     result: null, completedAt: null, nitSpent: "10",
@@ -157,13 +167,13 @@ export function MyAgents() {
                 }}
               >
                 <div
-                  className="w-11 h-11 rounded-xl flex items-center justify-center text-xl shrink-0"
+                  className="w-11 h-11 rounded-xl flex items-center justify-center shrink-0"
                   style={{
                     background: `linear-gradient(135deg,${agent.color}20,${agent.color}08)`,
                     border: `1px solid ${agent.color}25`,
                   }}
-                >
-                  {agent.icon}
+                 >         
+                  <agent.icon className="w-5 h-5" style={{ color: agent.color }} />
                 </div>
 
                 <div className="flex-1 min-w-0">
