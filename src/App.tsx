@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -14,7 +14,13 @@ import "@xyflow/react/dist/style.css";
 
 const queryClient = new QueryClient();
 
-export type View = "home" | "marketplace" | "my-agents" | "builder" | "earnings" | "pricing";
+export type View =
+  | "home"
+  | "marketplace"
+  | "my-agents"
+  | "builder"
+  | "earnings"
+  | "pricing";
 
 function AppContent() {
   const [activeView, setActiveView] = useState<View>("home");
@@ -28,20 +34,26 @@ function AppContent() {
 
   const isHome = activeView === "home";
 
-  const renderView = () => {
-    switch (activeView) {
-      case "home":        return <Home onNavigate={setActiveView} onSignIn={openSignIn} />;
-      case "marketplace": return <Marketplace />;
-      case "my-agents":  return <MyAgents />;
-      case "builder":    return <Builder />;
-      case "earnings":   return <Earnings />;
-      case "pricing":    return <Pricing onNavigate={setActiveView} onSignIn={openSignIn} />;
-    }
-  };
+  // 🔥 Centralized view mapping (easier to scale)
+  const views = useMemo(
+    () => ({
+      home: (
+        <Home onNavigate={setActiveView} onSignIn={openSignIn} />
+      ),
+      marketplace: <Marketplace />,
+      "my-agents": <MyAgents />,
+      builder: <Builder />,
+      earnings: <Earnings />,
+      pricing: (
+        <Pricing onNavigate={setActiveView} onSignIn={openSignIn} />
+      ),
+    }),
+    [activeView]
+  );
 
   return (
-    <div className="flex flex-col h-screen w-screen overflow-hidden" style={{ background: "#0a0c12" }}>
-      {/* AppNav shown on all non-home views */}
+    <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#0a0c12]">
+      {/* Navigation */}
       {!isHome && (
         <AppNav
           activeView={activeView}
@@ -50,14 +62,15 @@ function AppContent() {
         />
       )}
 
-      {/* Page content */}
+      {/* Main Content */}
       <main
         className="flex-1 flex flex-col overflow-hidden"
-        style={!isHome ? { paddingTop: "56px" } : {}}
+        style={!isHome ? { paddingTop: "56px" } : undefined}
       >
-        {renderView()}
+        {views[activeView]}
       </main>
 
+      {/* Auth Modal */}
       <SignInModal
         open={signInOpen}
         onClose={() => setSignInOpen(false)}
