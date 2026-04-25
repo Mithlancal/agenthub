@@ -1,0 +1,740 @@
+import { useState, useEffect, useRef } from "react";
+import {
+  motion, AnimatePresence, useInView,
+  useScroll, useTransform, useSpring,
+} from "framer-motion";
+import {
+  Store, Wrench, ArrowRight, Star, Shield, Coins, Bot, GitBranch,
+  Cpu, Mail, FileText, Search, TrendingUp, CheckCircle2, Zap,
+  ChevronDown, Play, Minus, X, ChevronRight,
+} from "lucide-react";
+import { useCountUp } from "@/hooks/useCountUp";
+
+type View = "marketplace" | "my-agents" | "builder" | "earnings" | "pricing";
+interface HomeProps {
+  onNavigate: (view: View) => void;
+  onSignIn: (mode?: "signin" | "signup") => void;
+}
+
+/* ───────────────────────── TOP NAV DROPDOWNS ───────────────────────── */
+const DROPDOWNS: Record<string, { columns: { heading: string; links: { label: string; sub?: string }[] }[] }> = {
+  Platform: {
+    columns: [
+      {
+        heading: "BY FUNCTION",
+        links: [
+          { label: "Hire Agents",       sub: "Browse the marketplace" },
+          { label: "Visual Builder",    sub: "Design no-code workflows" },
+          { label: "NIT-Wallet",        sub: "Manage your coin balance" },
+          { label: "Analytics",         sub: "Track agent performance" },
+        ],
+      },
+      {
+        heading: "BY ROLE",
+        links: [
+          { label: "For Developers"   },
+          { label: "For Businesses"   },
+          { label: "For Freelancers"  },
+          { label: "For Researchers"  },
+        ],
+      },
+    ],
+  },
+  Build: {
+    columns: [
+      {
+        heading: "TOOLS",
+        links: [
+          { label: "Drag-and-Drop Builder", sub: "Visual workflow canvas" },
+          { label: "Agent Templates",        sub: "Start from pre-built agents" },
+          { label: "Node Library",           sub: "Triggers, logic, actions" },
+          { label: "API Access",             sub: "Integrate anywhere" },
+        ],
+      },
+      {
+        heading: "LEARN",
+        links: [
+          { label: "Documentation"   },
+          { label: "Tutorials"       },
+          { label: "Community Forum" },
+          { label: "View all guides →" },
+        ],
+      },
+    ],
+  },
+  Enterprise: {
+    columns: [
+      {
+        heading: "BY COMPANY SIZE",
+        links: [
+          { label: "Startups"     },
+          { label: "Small & Medium Teams" },
+          { label: "Enterprises"  },
+          { label: "Nonprofits"   },
+        ],
+      },
+      {
+        heading: "BY USE CASE",
+        links: [
+          { label: "Automation"          },
+          { label: "Research & Analysis" },
+          { label: "Content Generation"  },
+          { label: "Customer Support"    },
+          { label: "View all use cases →" },
+        ],
+      },
+    ],
+  },
+};
+
+function TopNav({ onNavigate, onSignIn }: { onNavigate: (v: View) => void; onSignIn: (mode?: "signin" | "signup") => void }) {
+  const [scrolled, setScrolled] = useState(false);
+  const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const closeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  useEffect(() => {
+    const el = document.getElementById("landing-scroll");
+    if (!el) return;
+    const h = () => setScrolled(el.scrollTop > 12);
+    el.addEventListener("scroll", h, { passive: true });
+    return () => el.removeEventListener("scroll", h);
+  }, []);
+
+  const openDropdown = (label: string) => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+    if (DROPDOWNS[label]) setActiveDropdown(label);
+  };
+
+  const scheduleClose = () => {
+    closeTimer.current = setTimeout(() => setActiveDropdown(null), 120);
+  };
+
+  const cancelClose = () => {
+    if (closeTimer.current) clearTimeout(closeTimer.current);
+  };
+
+  const NAV_ITEMS = [
+    { label: "Platform",    sub: true,  action: null            },
+    { label: "Marketplace", sub: false, action: "marketplace"   },
+    { label: "Build",       sub: true,  action: null            },
+    { label: "Earn",        sub: false, action: "earnings"      },
+    { label: "Enterprise",  sub: true,  action: null            },
+    { label: "Pricing",     sub: false, action: "pricing"       },
+  ];
+
+  return (
+    <header
+      className="fixed top-0 left-0 right-0 z-50 transition-all duration-500"
+      style={{
+        background: scrolled ? "rgba(10,12,18,0.9)" : "transparent",
+        backdropFilter: scrolled ? "blur(28px) saturate(180%)" : "none",
+        WebkitBackdropFilter: scrolled ? "blur(28px) saturate(180%)" : "none",
+        borderBottom: scrolled ? "1px solid rgba(56,139,253,0.1)" : "1px solid transparent",
+        boxShadow: scrolled ? "0 1px 0 rgba(56,139,253,0.05), 0 12px 40px rgba(0,0,0,0.4)" : "none",
+      }}
+    >
+      <div className="max-w-7xl mx-auto px-6 h-16 flex items-center gap-4">
+        {/* Logo */}
+        <div className="flex items-center gap-2.5 shrink-0 cursor-pointer select-none">
+          <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ background: "linear-gradient(135deg,#388bfd,#7c3aed)", boxShadow: "0 0 18px rgba(56,139,253,0.55),0 0 36px rgba(56,139,253,0.18)" }}>
+            <Zap className="w-4 h-4 text-white" />
+          </div>
+          <span className="font-display text-sm font-black text-white tracking-tight">AgentHub</span>
+        </div>
+
+        {/* Nav */}
+        <nav className="hidden md:flex items-center gap-0.5 flex-1 relative">
+          {NAV_ITEMS.map((item) => (
+            <div
+              key={item.label}
+              className="relative"
+              onMouseEnter={() => openDropdown(item.label)}
+              onMouseLeave={scheduleClose}
+            >
+              <button
+                className="flex items-center gap-1 px-3 py-2 rounded-md text-[13px] font-medium transition-colors duration-150"
+                style={{
+                  color: activeDropdown === item.label ? "#e6edf3" : "rgba(230,237,243,0.65)",
+                  background: activeDropdown === item.label ? "rgba(255,255,255,0.06)" : "transparent",
+                }}
+                onClick={() => { if (item.action) onNavigate(item.action as View); }}
+              >
+                {item.label}
+                {item.sub && (
+                  <ChevronDown
+                    className="w-3 h-3 transition-transform duration-200"
+                    style={{ transform: activeDropdown === item.label ? "rotate(180deg)" : "rotate(0deg)", opacity: 0.5 }}
+                  />
+                )}
+              </button>
+
+              {/* Dropdown panel */}
+              <AnimatePresence>
+                {activeDropdown === item.label && DROPDOWNS[item.label] && (
+                  <motion.div
+                    initial={{ opacity: 0, y: 8, scale: 0.97 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    exit={{ opacity: 0, y: 6, scale: 0.97 }}
+                    transition={{ duration: 0.18, ease: [0.23, 1, 0.32, 1] }}
+                    onMouseEnter={cancelClose}
+                    onMouseLeave={scheduleClose}
+                    className="absolute top-full left-0 mt-2 rounded-2xl overflow-hidden"
+                    style={{
+                      background: "rgba(13,17,23,0.82)",
+                      backdropFilter: "blur(36px) saturate(200%)",
+                      WebkitBackdropFilter: "blur(36px) saturate(200%)",
+                      border: "1px solid rgba(255,255,255,0.07)",
+                      boxShadow:
+                        "0 0 0 1px rgba(56,139,253,0.06), " +
+                        "0 8px 32px rgba(0,0,0,0.7), " +
+                        "0 32px 80px rgba(0,0,0,0.5), " +
+                        "inset 0 1px 0 rgba(255,255,255,0.05)",
+                      minWidth: 420,
+                      zIndex: 100,
+                    }}
+                  >
+                    <div className="p-5 flex gap-8">
+                      {DROPDOWNS[item.label].columns.map((col) => (
+                        <div key={col.heading} className="flex-1">
+                          <p className="text-[10px] font-black tracking-[0.14em] mb-3" style={{ color: "rgba(110,118,129,0.7)" }}>
+                            {col.heading}
+                          </p>
+                          <ul className="space-y-0.5">
+                            {col.links.map((link) => (
+                              <li key={link.label}>
+                                <button
+                                  className="w-full text-left px-2 py-1.5 rounded-md transition-all duration-100"
+                                  style={{ color: "rgba(230,237,243,0.85)" }}
+                                  onMouseEnter={(e) => {
+                                    (e.currentTarget as HTMLElement).style.background = "rgba(255,255,255,0.06)";
+                                    (e.currentTarget as HTMLElement).style.color = "#e6edf3";
+                                  }}
+                                  onMouseLeave={(e) => {
+                                    (e.currentTarget as HTMLElement).style.background = "transparent";
+                                    (e.currentTarget as HTMLElement).style.color = "rgba(230,237,243,0.85)";
+                                  }}
+                                  onClick={() => {
+                                    setActiveDropdown(null);
+                                    if (link.label.includes("Hire Agents") || link.label.includes("Marketplace")) onNavigate("marketplace");
+                                    if (link.label.includes("Builder") || link.label.includes("Builder") || link.label.includes("Templates") || link.label.includes("Node") || link.label.includes("Drag")) onNavigate("builder");
+                                  }}
+                                >
+                                  <p className="text-[13px] font-medium leading-tight">{link.label}</p>
+                                  {link.sub && <p className="text-[11px] mt-0.5" style={{ color: "rgba(110,118,129,0.6)" }}>{link.sub}</p>}
+                                </button>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      ))}
+                    </div>
+                    {/* Footer row */}
+                    <div className="px-5 py-3 border-t" style={{ borderColor: "rgba(255,255,255,0.05)", background: "rgba(255,255,255,0.02)" }}>
+                      <button
+                        className="text-[12px] font-semibold transition-all duration-100"
+                        style={{ color: "#58a6ff" }}
+                        onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#79c0ff"; }}
+                        onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "#58a6ff"; }}
+                        onClick={() => { setActiveDropdown(null); onNavigate("marketplace"); }}
+                      >
+                        View all {item.label.toLowerCase()} features →
+                      </button>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          ))}
+        </nav>
+
+        {/* Right side */}
+        <div className="flex items-center gap-2 ml-auto shrink-0">
+          <div className="hidden lg:flex items-center gap-2 px-3 py-1.5 rounded-md text-[13px] cursor-text" style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(48,54,61,0.8)", color: "rgba(110,118,129,0.75)", minWidth: 190 }}>
+            <Search className="w-3.5 h-3.5 shrink-0" />
+            <span className="flex-1">Search or jump to...</span>
+            <kbd className="text-[10px] px-1.5 py-0.5 rounded" style={{ background: "rgba(48,54,61,0.7)", color: "rgba(110,118,129,0.7)", border: "1px solid rgba(48,54,61,0.9)" }}>/</kbd>
+          </div>
+          <button onClick={() => onSignIn("signin")} className="px-3.5 py-1.5 rounded-md text-[13px] font-medium transition-colors" style={{ color: "rgba(230,237,243,0.75)" }} onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.color = "#e6edf3"; }} onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.color = "rgba(230,237,243,0.75)"; }}>Sign in</button>
+          <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onSignIn("signup")} className="px-4 py-1.5 rounded-md text-[13px] font-semibold text-white" style={{ background: "rgba(255,255,255,0.08)", border: "1px solid rgba(240,246,252,0.12)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.07)" }}>Sign up</motion.button>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+/* ───────────────────────── CODE WINDOW ───────────────────────── */
+const CODE_LINES = [
+  { n: 1,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Agent: Refund Finder", c: "#6e7681" }] },
+  { n: 2,  tokens: [{ t: "const ", c: "#ff7b72" }, { t: "agent", c: "#79c0ff" }, { t: " = await ", c: "#e6edf3" }, { t: "AgentHub", c: "#ffa657" }, { t: ".hire({", c: "#e6edf3" }] },
+  { n: 3,  tokens: [{ t: "    name: ", c: "#e6edf3" }, { t: '"RefundFinder"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 4,  tokens: [{ t: "    task: ", c: "#e6edf3" }, { t: '"Scan my Amazon orders for refunds"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 5,  tokens: [{ t: "    deadline: ", c: "#e6edf3" }, { t: '"asap"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 6,  tokens: [{ t: "});", c: "#e6edf3" }] },
+  { n: 7,  tokens: [] },
+  { n: 8,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Agent executes autonomously...", c: "#6e7681" }] },
+  { n: 9,  tokens: [{ t: "agent", c: "#79c0ff" }, { t: ".on(", c: "#e6edf3" }, { t: '"complete"', c: "#a5d6ff" }, { t: ", result => {", c: "#e6edf3" }] },
+  { n: 10, tokens: [{ t: "    console", c: "#79c0ff" }, { t: ".log(result.summary);", c: "#e6edf3" }] },
+  { n: 11, tokens: [{ t: '    // ', c: "#6e7681" }, { t: '→ "Found $142 in refunds. Draft sent."', c: "#34d399" }] },
+  { n: 12, tokens: [{ t: "});", c: "#e6edf3" }] },
+];
+
+function CodeWindow({ style }: { style?: React.CSSProperties }) {
+  return (
+    <div style={style} className="relative w-full max-w-[700px] mx-auto">
+      {/* Outer purple glow ring — matches the reference */}
+      <div
+        className="absolute inset-0 rounded-2xl pointer-events-none"
+        style={{
+          boxShadow:
+            "0 0 0 1px rgba(139,92,246,0.25)," +
+            "0 0 60px 20px rgba(88,70,164,0.55)," +
+            "0 0 130px 60px rgba(88,70,164,0.28)," +
+            "0 0 220px 100px rgba(88,70,164,0.12)," +
+            "0 40px 100px rgba(0,0,0,0.8)",
+        }}
+      />
+
+      {/* The actual window */}
+      <div
+        className="relative overflow-hidden rounded-2xl"
+        style={{
+          background: "#161b22",
+          border: "1px solid rgba(48,54,61,0.9)",
+        }}
+      >
+        {/* Title bar */}
+        <div className="flex items-center px-5 py-4" style={{ background: "rgba(22,27,34,1)", borderBottom: "1px solid rgba(48,54,61,0.8)" }}>
+          <div className="flex items-center gap-2">
+            <div className="w-3.5 h-3.5 rounded-full" style={{ background: "#ff5f57", boxShadow: "0 0 8px rgba(255,95,87,0.7)" }} />
+            <div className="w-3.5 h-3.5 rounded-full" style={{ background: "#ffbd2e", boxShadow: "0 0 8px rgba(255,189,46,0.6)" }} />
+            <div className="w-3.5 h-3.5 rounded-full" style={{ background: "#28c840", boxShadow: "0 0 8px rgba(40,200,64,0.6)" }} />
+          </div>
+          <div className="flex-1 flex justify-center">
+            <div className="px-5 py-1 rounded-md text-[12px] font-medium" style={{ background: "rgba(48,54,61,0.7)", color: "rgba(230,237,243,0.5)", border: "1px solid rgba(48,54,61,0.9)", minWidth: 220, textAlign: "center" }}>
+              agenthub-quickstart.ts
+            </div>
+          </div>
+          <div className="flex gap-2.5 opacity-30">
+            <Minus className="w-3.5 h-3.5 text-white" />
+            <X className="w-3.5 h-3.5 text-white" />
+          </div>
+        </div>
+
+        {/* File tabs */}
+        <div className="flex" style={{ background: "#0d1117", borderBottom: "1px solid rgba(48,54,61,0.6)" }}>
+          {[
+            { label: "agenthub-quickstart.ts", type: "TS",   tc: "#79c0ff", active: true  },
+            { label: "agent.config.json",       type: "JSON", tc: "#e3b341", active: false },
+            { label: "results.log",              type: "LOG",  tc: "#34d399", active: false },
+          ].map((tab) => (
+            <div key={tab.label} className="flex items-center gap-1.5 px-5 py-2.5 text-[12px] font-medium select-none" style={{ color: tab.active ? "rgba(230,237,243,0.95)" : "rgba(110,118,129,0.7)", borderBottom: tab.active ? "2px solid #388bfd" : "2px solid transparent", background: tab.active ? "rgba(22,27,34,0.6)" : "transparent" }}>
+              <span className="text-[10px] font-black" style={{ color: tab.tc }}>{tab.type}</span>
+              {tab.label}
+            </div>
+          ))}
+        </div>
+
+        {/* Code area */}
+        <div className="px-6 py-5 font-mono text-[13px] leading-[1.9] relative overflow-hidden" style={{ background: "#0d1117", minHeight: 290 }}>
+          {/* Scanline */}
+          <div className="absolute left-0 right-0 h-10 pointer-events-none animate-scanline" style={{ background: "linear-gradient(transparent,rgba(56,139,253,0.06),transparent)", opacity: 0.6 }} />
+          {CODE_LINES.map((line, li) => (
+            <motion.div key={line.n} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.8 + li * 0.065, duration: 0.22 }} className="flex">
+              <span className="select-none w-8 shrink-0 text-right mr-6 font-mono text-[12px]" style={{ color: "rgba(110,118,129,0.38)" }}>{line.n}</span>
+              <span>{line.tokens.map((tok, ti) => <span key={ti} style={{ color: tok.c }}>{tok.t}</span>)}</span>
+            </motion.div>
+          ))}
+          {/* Cursor */}
+          <motion.span animate={{ opacity: [1, 0] }} transition={{ duration: 0.55, repeat: Infinity, repeatType: "reverse" }} className="inline-block align-middle ml-0.5" style={{ width: 2, height: 16, background: "#79c0ff", borderRadius: 1 }} />
+        </div>
+
+        {/* Status bar */}
+        <div className="flex items-center justify-between px-5 py-2 text-[11px] font-medium" style={{ background: "rgba(31,111,235,0.72)", borderTop: "1px solid rgba(56,139,253,0.3)", color: "rgba(255,255,255,0.9)" }}>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5"><Zap className="w-3 h-3" /> AgentHub Dev</span>
+            <span>TypeScript</span>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="flex items-center gap-1.5"><span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />Agent Ready</span>
+            <span>UTF-8</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ───────────────────────── STATS ───────────────────────── */
+interface StatConfig { label: string; end: number; decimals: number; prefix: string; suffix: string; icon: React.ElementType; }
+const STATS: StatConfig[] = [
+  { label: "AI Agents Available", end: 2400, decimals: 0, prefix: "",  suffix: "+",  icon: Bot          },
+  { label: "Tasks Completed",     end: 98,   decimals: 0, prefix: "",  suffix: "k",  icon: CheckCircle2 },
+  { label: "Avg Rating",          end: 4.9,  decimals: 1, prefix: "",  suffix: "★",  icon: Star         },
+  { label: "Saved for Users",     end: 2.1,  decimals: 1, prefix: "$", suffix: "M",  icon: Coins        },
+];
+
+function StatCard({ stat, enabled, index }: { stat: StatConfig; enabled: boolean; index: number }) {
+  const Icon = stat.icon;
+  const count = useCountUp(stat.end, 2400, stat.decimals, enabled);
+  const display = `${stat.prefix}${stat.decimals === 0 ? Math.floor(count).toLocaleString() : count.toFixed(stat.decimals)}${stat.suffix}`;
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 24 }}
+      animate={enabled ? { opacity: 1, y: 0 } : {}}
+      transition={{ delay: index * 0.1, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      className="relative flex flex-col items-center py-12 px-6 overflow-hidden group"
+      style={{ background: "#0d1117" }}
+    >
+      {/* Subtle hover glow */}
+      <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" style={{ background: "radial-gradient(ellipse 80% 60% at 50% 100%,rgba(56,139,253,0.07),transparent)" }} />
+
+      <Icon className="w-6 h-6 mb-5 relative z-10" style={{ color: "#388bfd", filter: "drop-shadow(0 0 10px rgba(56,139,253,0.7))" }} />
+      <p className="font-display font-black mb-2 tabular-nums relative z-10" style={{ fontSize: "clamp(2rem,4vw,2.8rem)", color: "#e6edf3", letterSpacing: "-0.025em", lineHeight: 1 }}>
+        {display}
+      </p>
+      <p className="text-[13px] font-medium relative z-10" style={{ color: "#6e7681" }}>{stat.label}</p>
+    </motion.div>
+  );
+}
+
+function StatsSection() {
+  const ref = useRef<HTMLDivElement>(null);
+  const inView = useInView(ref, { once: true, amount: 0.3 });
+  return (
+    <section ref={ref} style={{ background: "#0d1117", borderTop: "1px solid rgba(48,54,61,0.7)", borderBottom: "1px solid rgba(48,54,61,0.7)" }}>
+      <div className="max-w-5xl mx-auto grid grid-cols-2 lg:grid-cols-4 divide-x divide-y lg:divide-y-0" style={{ borderColor: "rgba(48,54,61,0.55)" }}>
+        {STATS.map((stat, i) => <StatCard key={stat.label} stat={stat} enabled={inView} index={i} />)}
+      </div>
+    </section>
+  );
+}
+
+/* ───────────────────────── HOW IT WORKS ───────────────────────── */
+const HOW_IT_WORKS = [
+  { step: "01", title: "Browse the Marketplace", desc: "Explore hundreds of specialized AI agents — from legal review to cold email outreach. Filter by category, rating, or task type.", icon: Store,    color: "#388bfd" },
+  { step: "02", title: "Describe Your Task",       desc: "Fill out a simple form in plain English. No prompting skills, no configuration. Just tell the agent what you need done.",    icon: FileText, color: "#34d399" },
+  { step: "03", title: "Agent Executes End-to-End",desc: "The AI autonomously performs multi-step workflows — browsing the web, reading docs, sending emails — entirely on your behalf.", icon: Cpu,      color: "#a78bfa" },
+  { step: "04", title: "Review Results & Earn",    desc: "Approve results in seconds. If you built an agent, earn NIT-Coins every time someone hires it from the marketplace.",          icon: Coins,    color: "#f59e0b" },
+];
+
+/* ───────────────────────── FEATURES ───────────────────────── */
+const FEATURES = [
+  { icon: GitBranch, title: "Visual Workflow Builder",  desc: "Drag-and-drop Trigger → Logic → Action nodes. Build custom agents without any code.",                                   color: "#388bfd", tag: "Builder"      },
+  { icon: Shield,    title: "Sandboxed & Verified",     desc: "Every agent runs in an isolated sandbox. You control what data each agent can access — always.",                         color: "#34d399", tag: "Security"     },
+  { icon: Mail,      title: "50+ Real Integrations",    desc: "Agents work inside Gmail, Slack, GitHub, Notion and more. Real actions in your actual accounts.",                        color: "#a78bfa", tag: "Integrations" },
+  { icon: Coins,     title: "NIT-Coin Economy",         desc: "Pay per task. Build an agent once and earn passively every time someone else hires it.",                                  color: "#f59e0b", tag: "Economy"      },
+  { icon: Search,    title: "Context-Aware AI",         desc: "Agents remember across tasks, learn your preferences, and improve with every interaction.",                              color: "#06b6d4", tag: "AI"           },
+  { icon: TrendingUp,title: "Creator Analytics",        desc: "Track usage, earnings, satisfaction scores, and get AI-powered improvement suggestions.",                                color: "#ec4899", tag: "Analytics"    },
+];
+
+/* ───────────────────────── GLOW CARD ───────────────────────── */
+function GlowCard({ color, children, delay = 0 }: { color: string; children: React.ReactNode; delay?: number }) {
+  const [hovered, setHovered] = useState(false);
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 28 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ delay, duration: 0.5, ease: [0.23, 1, 0.32, 1] }}
+      onHoverStart={() => setHovered(true)}
+      onHoverEnd={() => setHovered(false)}
+      whileHover={{ y: -10, scale: 1.015, transition: { type: "spring", stiffness: 260, damping: 20 } }}
+      className="relative rounded-2xl p-6 overflow-hidden"
+      style={{
+        /* Resting: clean dark card matching image 1 */
+        background: hovered
+          ? `linear-gradient(145deg, rgba(28,32,48,0.98), rgba(18,21,32,0.98))`
+          : `rgba(17, 20, 28, 0.92)`,
+        border: `1px solid ${hovered ? `${color}55` : "rgba(255,255,255,0.06)"}`,
+        backdropFilter: "blur(24px)",
+        /* Hover: intense pop-out glow matching image 2 intensity */
+        boxShadow: hovered
+          ? [
+              `0 0 0 1px ${color}50`,
+              `0 0 20px 4px ${color}45`,
+              `0 0 60px 12px ${color}28`,
+              `0 0 120px 30px ${color}12`,
+              `0 28px 70px rgba(0,0,0,0.6)`,
+              `inset 0 1px 0 ${color}22`,
+            ].join(", ")
+          : "0 2px 16px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)",
+        transition: "border-color 0.28s ease, box-shadow 0.28s ease, background 0.28s ease",
+        cursor: "default",
+      }}
+    >
+      {/* Top shimmer edge — bright on hover */}
+      <div
+        className="absolute inset-x-0 top-0 h-px"
+        style={{
+          background: hovered
+            ? `linear-gradient(90deg, transparent, ${color}90, ${color}cc, ${color}90, transparent)`
+            : `linear-gradient(90deg, transparent, rgba(255,255,255,0.06), transparent)`,
+          boxShadow: hovered ? `0 0 12px 2px ${color}50` : "none",
+          transition: "background 0.28s ease, box-shadow 0.28s ease",
+        }}
+      />
+      {/* Radial bloom from top center */}
+      <div
+        className="absolute inset-0 pointer-events-none rounded-2xl"
+        style={{
+          background: `radial-gradient(ellipse 90% 70% at 50% -5%, ${color}18, transparent 60%)`,
+          opacity: hovered ? 1 : 0,
+          transition: "opacity 0.28s ease",
+        }}
+      />
+      <div className="relative z-10">{children}</div>
+    </motion.div>
+  );
+}
+
+/* ───────────────────────── MAIN ───────────────────────── */
+export function Home({ onNavigate, onSignIn }: HomeProps) {
+  const [email, setEmail] = useState("");
+  const [submitted, setSubmitted] = useState(false);
+
+  // Scroll-linked animation refs
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const heroRef = useRef<HTMLElement>(null);
+
+  const { scrollYProgress } = useScroll({
+    target: heroRef,
+    container: scrollContainerRef,
+    offset: ["start start", "end start"],
+  });
+
+  // Smooth spring on scroll progress
+  const smoothProgress = useSpring(scrollYProgress, { stiffness: 60, damping: 20, restDelta: 0.001 });
+
+  // Text floats up and fades out as editor rises over it
+  const textY       = useTransform(smoothProgress, [0.3, 0.75], [0, -80]);
+  const textOpacity = useTransform(smoothProgress, [0.3, 0.65], [1, 0]);
+  const textScale   = useTransform(smoothProgress, [0.3, 0.75], [1, 0.94]);
+
+  // Editor rises from below (parallax): starts 80px low, arrives at -20px
+  const editorY       = useTransform(smoothProgress, [0.2, 0.8], [80, -40]);
+  const editorScale   = useTransform(smoothProgress, [0.2, 0.55], [0.96, 1]);
+  const editorOpacity = useTransform(smoothProgress, [0.15, 0.38], [0, 1]);
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (email) { setSubmitted(true); setTimeout(() => setSubmitted(false), 3000); setEmail(""); }
+  };
+
+  return (
+    <div
+      id="landing-scroll"
+      ref={scrollContainerRef}
+      className="flex-1 overflow-y-auto overflow-x-hidden"
+      style={{ background: "#0a0c12", position: "relative" }}
+    >
+      <TopNav onNavigate={onNavigate} onSignIn={onSignIn} />
+
+      {/* ═══════════ HERO (tall — enables scroll-over effect) ═══════════ */}
+      <section
+        ref={heroRef}
+        className="relative overflow-hidden"
+        style={{
+          minHeight: "200vh",
+          background:
+            "radial-gradient(ellipse 130% 60% at 50% -5%,rgba(88,70,164,0.62) 0%,transparent 58%)," +
+            "radial-gradient(ellipse 75% 45% at 82% 10%,rgba(56,139,253,0.2) 0%,transparent 48%)," +
+            "radial-gradient(ellipse 55% 38% at 18% 22%,rgba(124,58,237,0.15) 0%,transparent 48%)," +
+            "#0a0c12",
+        }}
+      >
+        {/* Grid */}
+        <div className="absolute inset-0 grid-bg opacity-35 pointer-events-none" />
+        {/* Aurora orbs */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="aurora-orb animate-drift"      style={{ width: 1100, height: 900, top: "-35%", left: "50%", transform: "translateX(-50%)", background: "radial-gradient(circle,rgba(88,70,164,0.44) 0%,transparent 65%)" }} />
+          <div className="aurora-orb animate-drift-slow" style={{ width: 600,  height: 600, bottom: "20%", right: "-8%", background: "radial-gradient(circle,rgba(56,139,253,0.2) 0%,transparent 65%)" }} />
+          <div className="aurora-orb animate-drift"      style={{ width: 500,  height: 500, bottom: "20%", left:  "-8%", background: "radial-gradient(circle,rgba(124,58,237,0.14) 0%,transparent 65%)", animationDelay: "10s" }} />
+        </div>
+
+        {/* ── Sticky text block ── */}
+        <div className="sticky top-0 h-screen flex flex-col items-center justify-center px-6 pointer-events-none" style={{ zIndex: 1 }}>
+          <motion.div style={{ y: textY, opacity: textOpacity, scale: textScale }} className="text-center max-w-4xl mx-auto pointer-events-auto">
+            {/* Badge */}
+            <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 mb-10 px-4 py-2 rounded-full text-[12px] font-semibold"
+              style={{ background: "rgba(56,139,253,0.08)", border: "1px solid rgba(56,139,253,0.3)", color: "#79c0ff", backdropFilter: "blur(12px)", boxShadow: "0 0 32px rgba(56,139,253,0.14),inset 0 1px 0 rgba(255,255,255,0.07)" }}
+            >
+              <span className="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse" />
+              Now in Beta — Join 98,000+ users
+              <ChevronRight className="w-3.5 h-3.5 opacity-50" />
+            </motion.div>
+
+            {/* Headline */}
+            <motion.h1 initial={{ opacity: 0, y: 36 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.1, ease: [0.23, 1, 0.32, 1] }}
+              className="font-display font-extrabold tracking-tight mb-8"
+              style={{ fontSize: "clamp(3rem,6.8vw,5.2rem)", lineHeight: 1.04, letterSpacing: "-0.03em" }}
+            >
+              <span style={{ color: "#e6edf3" }}>The future of getting</span><br />
+              <span style={{ background: "linear-gradient(180deg,#e6edf3 0%,#b3d4f5 40%,#58a6ff 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
+                work done with AI
+              </span>
+            </motion.h1>
+
+            {/* Sub */}
+            <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25, ease: [0.23, 1, 0.32, 1] }}
+              className="text-[17px] leading-relaxed mb-12 max-w-2xl mx-auto" style={{ color: "rgba(139,148,158,0.9)" }}
+            >
+              Hire specialized AI agents to handle any task end-to-end — from refund claims to legal review to code audits. Build your own agent and earn. Everything on one platform.
+            </motion.p>
+
+            {/* Email + CTA */}
+            <motion.form onSubmit={handleSubmit} initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, delay: 0.4 }}
+              className="flex flex-col sm:flex-row items-stretch gap-2 max-w-xl mx-auto mb-5"
+            >
+              <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Enter your email"
+                className="flex-1 px-4 py-3.5 rounded-lg text-[14px] outline-none text-white/90"
+                style={{ background: "rgba(13,17,23,0.88)", border: "1px solid rgba(48,54,61,0.95)", backdropFilter: "blur(12px)", boxShadow: "inset 0 1px 0 rgba(255,255,255,0.04)" }}
+                onFocus={(e) => { e.target.style.borderColor = "rgba(56,139,253,0.7)"; e.target.style.boxShadow = "0 0 0 3px rgba(56,139,253,0.13),inset 0 1px 0 rgba(255,255,255,0.04)"; }}
+                onBlur={(e)  => { e.target.style.borderColor = "rgba(48,54,61,0.95)";  e.target.style.boxShadow = "inset 0 1px 0 rgba(255,255,255,0.04)"; }}
+              />
+              <motion.button type="submit" whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }} className="btn-primary-gh px-6 py-3.5 rounded-lg text-[14px] font-semibold text-white whitespace-nowrap">
+                <AnimatePresence mode="wait">
+                  {submitted
+                    ? <motion.span key="d" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex items-center gap-1.5"><CheckCircle2 className="w-4 h-4" />You're in!</motion.span>
+                    : <motion.span key="c" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>Sign up for AgentHub</motion.span>}
+                </AnimatePresence>
+              </motion.button>
+            </motion.form>
+
+            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.55 }} className="flex items-center justify-center gap-3">
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("marketplace")} className="btn-secondary-gh flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-semibold" style={{ color: "rgba(230,237,243,0.85)" }}>
+                <Store className="w-4 h-4" /> Browse Agents
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("builder")} className="btn-secondary-gh flex items-center gap-2 px-6 py-3 rounded-lg text-[14px] font-semibold" style={{ color: "rgba(230,237,243,0.85)" }}>
+                <Play className="w-4 h-4" /> Try the Builder
+              </motion.button>
+            </motion.div>
+          </motion.div>
+        </div>
+
+        {/* ── Editor: natural flow in second 100vh, rises via parallax ── */}
+        <div
+          className="flex justify-center items-start px-6 pb-16 relative"
+          style={{ zIndex: 10, marginTop: "-8vh" }}
+        >
+          <motion.div
+            style={{ y: editorY, scale: editorScale, opacity: editorOpacity }}
+            className="w-full max-w-[720px]"
+          >
+            {/* Purple bloom above editor — makes text appear to go behind it */}
+            <div
+              className="absolute -top-28 left-1/2 -translate-x-1/2 w-[130%] h-44 pointer-events-none"
+              style={{ background: "radial-gradient(ellipse 100% 100% at 50% 100%,rgba(88,70,164,0.7),rgba(60,30,140,0.3) 50%,transparent 75%)", filter: "blur(24px)", zIndex: -1 }}
+            />
+            <CodeWindow />
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ═══════════ STATS ═══════════ */}
+      <StatsSection />
+
+      {/* ═══════════ HOW IT WORKS ═══════════ */}
+      <section className="px-8 py-28" style={{ background: "#0a0c12" }}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] mb-4" style={{ color: "#388bfd" }}>How it works</p>
+            <h2 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(2rem,4.5vw,3.2rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}>
+              From task to result in{" "}
+              <span style={{ background: "linear-gradient(135deg,#79c0ff,#58a6ff)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>minutes</span>
+            </h2>
+            <p className="text-[15px] max-w-lg mx-auto" style={{ color: "#6e7681" }}>No complicated setup. No learning curve. Describe what you need, and the agent handles the rest.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            {HOW_IT_WORKS.map((item, i) => {
+              const Icon = item.icon;
+              return (
+                <GlowCard key={item.step} color={item.color} delay={i * 0.1}>
+                  <div className="flex items-start gap-5">
+                    <div className="w-12 h-12 rounded-xl flex items-center justify-center shrink-0" style={{ background: `${item.color}12`, border: `1px solid ${item.color}30`, boxShadow: `0 0 24px ${item.color}25,inset 0 1px 0 ${item.color}18` }}>
+                      <Icon className="w-6 h-6" style={{ color: item.color, filter: `drop-shadow(0 0 7px ${item.color}90)` }} />
+                    </div>
+                    <div>
+                      <p className="text-[11px] font-black font-mono tracking-[0.22em] mb-2" style={{ color: item.color }}>{item.step}</p>
+                      <h3 className="font-display font-bold text-white text-[15px] mb-2.5 leading-tight">{item.title}</h3>
+                      <p className="text-[13px] leading-relaxed" style={{ color: "#6e7681" }}>{item.desc}</p>
+                    </div>
+                  </div>
+                </GlowCard>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ FEATURES ═══════════ */}
+      <section className="px-8 py-28" style={{ background: "#0d1117", borderTop: "1px solid rgba(48,54,61,0.5)" }}>
+        <div className="max-w-5xl mx-auto">
+          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="text-center mb-20">
+            <p className="text-[11px] font-black uppercase tracking-[0.2em] mb-4" style={{ color: "#a78bfa" }}>Platform</p>
+            <h2 className="font-display font-bold text-white mb-5" style={{ fontSize: "clamp(2rem,4.5vw,3.2rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}>
+              Built for{" "}
+              <span style={{ background: "linear-gradient(135deg,#c4b5fd,#a78bfa)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>builders and hirers</span>
+            </h2>
+            <p className="text-[15px] max-w-lg mx-auto" style={{ color: "#6e7681" }}>All the tools you need to hire AI agents — or build and monetize your own.</p>
+          </motion.div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FEATURES.map((f, i) => {
+              const Icon = f.icon;
+              return (
+                <GlowCard key={f.title} color={f.color} delay={i * 0.07}>
+                  <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-5" style={{ background: `${f.color}12`, border: `1px solid ${f.color}28`, boxShadow: `0 0 22px ${f.color}22` }}>
+                    <Icon className="w-5 h-5" style={{ color: f.color, filter: `drop-shadow(0 0 6px ${f.color}90)` }} />
+                  </div>
+                  <div className="flex items-center gap-2 mb-3">
+                    <h3 className="font-display font-bold text-white text-[14px]">{f.title}</h3>
+                    <span className="text-[10px] font-bold px-1.5 py-0.5 rounded" style={{ background: `${f.color}12`, border: `1px solid ${f.color}25`, color: f.color }}>{f.tag}</span>
+                  </div>
+                  <p className="text-[13px] leading-relaxed" style={{ color: "#6e7681" }}>{f.desc}</p>
+                </GlowCard>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* ═══════════ CTA ═══════════ */}
+      <section className="px-8 py-28" style={{ background: "#0a0c12", borderTop: "1px solid rgba(48,54,61,0.5)" }}>
+        <motion.div initial={{ opacity: 0, y: 32 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}
+          className="max-w-3xl mx-auto text-center rounded-3xl p-16 relative overflow-hidden"
+          style={{ background: "rgba(255,255,255,0.022)", border: "1px solid rgba(48,54,61,0.8)", backdropFilter: "blur(28px)", boxShadow: "0 0 0 1px rgba(56,139,253,0.05),0 32px 100px rgba(0,0,0,0.55),0 0 160px rgba(88,70,164,0.14)" }}
+        >
+          <div className="absolute inset-0 pointer-events-none" style={{ background: "radial-gradient(ellipse 90% 60% at 50% 0%,rgba(88,70,164,0.28),transparent 65%)" }} />
+          <div className="absolute inset-x-0 top-0 h-px" style={{ background: "linear-gradient(90deg,transparent,rgba(139,92,246,0.7),rgba(56,139,253,0.7),transparent)", boxShadow: "0 0 28px rgba(88,70,164,0.5)" }} />
+
+          <div className="relative z-10">
+            <motion.div initial={{ scale: 0.8, opacity: 0 }} whileInView={{ scale: 1, opacity: 1 }} viewport={{ once: true }} transition={{ delay: 0.2 }}
+              className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-8"
+              style={{ background: "linear-gradient(135deg,#388bfd,#7c3aed)", boxShadow: "0 0 44px rgba(56,139,253,0.55),0 0 88px rgba(124,58,237,0.28)" }}
+            >
+              <Zap className="w-8 h-8 text-white" />
+            </motion.div>
+            <h2 className="font-display font-bold text-white mb-4" style={{ fontSize: "clamp(1.7rem,4vw,2.6rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}>Ready to hire your first agent?</h2>
+            <p className="text-[15px] mb-10 max-w-md mx-auto" style={{ color: "#6e7681", lineHeight: 1.75 }}>Join thousands of professionals reclaiming hours every week. Your first task is just 10 NIT-Coins.</p>
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("marketplace")} className="btn-primary-gh flex items-center gap-2.5 px-8 py-3.5 rounded-lg text-[14px] font-semibold text-white">
+                <Store className="w-4 h-4" /> Explore Marketplace <ArrowRight className="w-4 h-4" />
+              </motion.button>
+              <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("builder")} className="btn-secondary-gh flex items-center gap-2.5 px-8 py-3.5 rounded-lg text-[14px] font-semibold" style={{ color: "rgba(230,237,243,0.85)" }}>
+                <Wrench className="w-4 h-4" /> Build &amp; Earn
+              </motion.button>
+            </div>
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <div className="px-8 py-10 text-center" style={{ borderTop: "1px solid rgba(48,54,61,0.5)", background: "#0a0c12" }}>
+        <p className="text-[12px]" style={{ color: "#484f58" }}>© 2026 AgentHub, Inc. · The AI Agent Marketplace · Built for the future of work</p>
+      </div>
+    </div>
+  );
+}
