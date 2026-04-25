@@ -189,28 +189,20 @@ const nodeTypes: NodeTypes = {
 
 const initialNodes: Node[] = [
   {
-    id: "1",
-    type: "trigger",
-    position: { x: 80, y: 180 },
-    data: { label: "Email Trigger", type: "trigger", description: "New email received" },
+    id: "1", type: "trigger", position: { x: 80, y: 180 },
+    data: { label: "Owl Receipt", type: "trigger", description: "New parchment received" },
   },
   {
-    id: "2",
-    type: "logic",
-    position: { x: 320, y: 120 },
-    data: { label: "AI Logic", type: "logic", description: "Analyze & classify" },
+    id: "2", type: "logic", position: { x: 320, y: 120 },
+    data: { label: "Decipher Scroll", type: "logic", description: "Analyze & classify intent" },
   },
   {
-    id: "3",
-    type: "logic",
-    position: { x: 320, y: 240 },
-    data: { label: "Filter", type: "logic", description: "Check conditions" },
+    id: "3", type: "logic", position: { x: 320, y: 240 },
+    data: { label: "Magical Filter", type: "logic", description: "Check ward conditions" },
   },
   {
-    id: "4",
-    type: "action",
-    position: { x: 560, y: 180 },
-    data: { label: "Draft Reply", type: "action", description: "Create Gmail draft" },
+    id: "4", type: "action", position: { x: 560, y: 180 },
+    data: { label: "Enchant Quill", type: "action", description: "Draft automated response" },
   },
 ];
 
@@ -223,34 +215,19 @@ const initialEdges: Edge[] = [
 
 const BLOCK_TYPES = [
   {
-    type: "trigger" as const,
-    label: "Trigger",
-    description: "Start condition",
-    icon: Zap,
-    color: "#fbbf24",
-    bg: "rgba(251,191,36,0.1)",
-    border: "rgba(251,191,36,0.25)",
-    options: ["Manual Trigger", "Incoming Webhook"],
+    type: "trigger" as const, label: "Incantation", description: "Starting condition",
+    icon: Zap, color: "#fbbf24", bg: "rgba(251,191,36,0.1)", border: "rgba(251,191,36,0.25)",
+    options: ["Wand Flick (Manual)", "Owl Arrival (Webhook)"],
   },
   {
-    type: "logic" as const,
-    label: "AI Logic",
-    description: "Real AI processing",
-    icon: Brain,
-    color: "#58a6ff",
-    bg: "rgba(56,139,253,0.1)",
-    border: "rgba(56,139,253,0.25)",
-    options: ["Google Gemini 1.5", "Groq (Llama 3)"],
+    type: "logic" as const, label: "Cognitive Charm", description: "AI processing core",
+    icon: Brain, color: "#58a6ff", bg: "rgba(56,139,253,0.1)", border: "rgba(56,139,253,0.25)",
+    options: ["Oracle of Gemini", "Swift-Thought (Groq)"],
   },
   {
-    type: "action" as const,
-    label: "Action",
-    description: "Real-world output",
-    icon: CheckSquare,
-    color: "#34d399",
-    bg: "rgba(52,211,153,0.1)",
-    border: "rgba(52,211,153,0.25)",
-    options: ["Slack Message", "Discord Message", "Outgoing Webhook"],
+    type: "action" as const, label: "Manifestation", description: "Real-world magical output",
+    icon: CheckSquare, color: "#34d399", bg: "rgba(52,211,153,0.1)", border: "rgba(52,211,153,0.25)",
+    options: ["Floo Broadcast (Slack)", "Patronus Messenger (Discord)", "Dispatch Owl (Webhook)"],
   },
 ];
 
@@ -339,17 +316,17 @@ export function Builder() {
   const addNode = (type: "trigger" | "logic" | "action", label: string) => {
     const descriptions: Record<string, Record<string, string>> = {
       trigger: {
-        "Manual Trigger": "Start with custom input",
-        "Incoming Webhook": "HTTP POST endpoint"
+        "Wand Flick (Manual)": "Start with custom intent",
+        "Owl Arrival (Webhook)": "Listen for incoming magical signals"
       },
       logic: {
-        "Google Gemini 1.5": "Multimodal AI (Google)",
-        "Groq (Llama 3)": "Ultra-fast AI (Groq)"
+        "Oracle of Gemini": "Multimodal Divination (Google)",
+        "Swift-Thought (Groq)": "Ultra-fast cognition (Groq)"
       },
       action: {
-        "Slack Message": "Post to Slack channel",
-        "Discord Message": "Post to Discord server",
-        "Outgoing Webhook": "Send data to any URL"
+        "Floo Broadcast (Slack)": "Speak into the Floo Network",
+        "Patronus Messenger (Discord)": "Send a Patronus to a server",
+        "Dispatch Owl (Webhook)": "Send data to any magical endpoint"
       },
     };
 
@@ -743,7 +720,7 @@ export function Builder() {
             }}
           >
             <Play className="w-3.5 h-3.5" />
-            {runStatus === "running" ? "Running..." : runStatus === "success" ? "Done!" : runStatus === "error" ? "Failed" : "Run Agent"}
+            {runStatus === "running" ? "Conjuring..." : runStatus === "success" ? "Manifested!" : runStatus === "error" ? "Spell Failed" : "Cast Spell"}
           </motion.button>
         </div>
 
@@ -849,8 +826,8 @@ export function Builder() {
                     borderTopColor: "#388bfd",
                   }}
                 />
-                <p className="text-sm font-bold text-white mb-1">Agent Executing...</p>
-                <p className="text-xs text-white/40">Processing your workflow</p>
+                <p className="text-sm font-bold text-white mb-1">Weaving Enchantment...</p>
+<p className="text-xs text-white/40">Channeling magical energies</p>
               </motion.div>
             </motion.div>
           )}

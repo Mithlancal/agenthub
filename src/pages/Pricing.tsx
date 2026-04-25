@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { Check, Zap, Building2, Sparkles } from "lucide-react";
+import { Check, Wand2, Landmark, Sparkles } from "lucide-react";
 
 type View = "marketplace" | "my-agents" | "builder" | "earnings" | "pricing";
 interface PricingProps {
@@ -11,19 +11,19 @@ const PLANS = [
   {
     name: "Free",
     price: "0",
-    unit: "NIT/mo",
-    desc: "Perfect for exploring the agent ecosystem.",
+    unit: "Galleons/mo",
+    desc: "Perfect for exploring the magical ecosystem.",
     accent: "#58a6ff",
-    icon: Zap,
+    icon: Wand2,
     highlight: false,
     features: [
-      "Access to public marketplace",
-      "Hire up to 3 agents/month",
-      "100 NIT starter credits",
-      "Basic analytics dashboard",
-      "Community support",
+      "Access to public Apothecary",
+      "Summon up to 3 familiars/month",
+      "100 Galleon starter grant",
+      "Basic divination dashboard",
+      "Guild support",
     ],
-    cta: "Get started free",
+    cta: "Begin apprenticeship",
     ctaStyle: {
       background: "rgba(255,255,255,0.07)",
       border: "1px solid rgba(255,255,255,0.12)",
@@ -33,19 +33,19 @@ const PLANS = [
   {
     name: "Pro",
     price: "290",
-    unit: "NIT/mo",
-    desc: "For power users and indie creators who build and earn.",
+    unit: "Galleons/mo",
+    desc: "For powerful spellcrafters and freelance cursers.",
     accent: "#388bfd",
     icon: Sparkles,
     highlight: true,
     features: [
       "Everything in Free",
-      "Unlimited agent hires",
-      "Visual workflow builder",
-      "Publish & monetize agents",
-      "Advanced analytics & insights",
-      "Priority queue processing",
-      "Email support",
+      "Unlimited familiar summons",
+      "Visual spellcrafter canvas",
+      "Publish & monetize enchantments",
+      "Advanced divination insights",
+      "Priority Floo processing",
+      "Owl post support",
     ],
     cta: "Start Pro trial",
     ctaStyle: {
@@ -58,20 +58,20 @@ const PLANS = [
     name: "Enterprise",
     price: "Custom",
     unit: "",
-    desc: "Tailored for teams and organizations at scale.",
+    desc: "Tailored for Ministry departments and grand covens.",
     accent: "#a78bfa",
-    icon: Building2,
+    icon: Landmark,
     highlight: false,
     features: [
       "Everything in Pro",
-      "Custom private agent deployment",
-      "Full API access & webhooks",
-      "Dedicated account manager",
-      "99.9% SLA uptime guarantee",
-      "SSO & audit logs",
-      "Volume NIT pricing",
+      "Custom private familiar deployment",
+      "Full magical API & ward access",
+      "Dedicated Ministry liaison",
+      "99.9% unbreakable vow guarantee",
+      "SSO & magical audit logs",
+      "Volume Galleon pricing",
     ],
-    cta: "Contact sales",
+    cta: "Dispatch an owl",
     ctaStyle: {
       background: "rgba(167,139,250,0.1)",
       border: "1px solid rgba(167,139,250,0.3)",
@@ -79,23 +79,22 @@ const PLANS = [
     },
   },
 ];
-
 const FAQ = [
   {
-    q: "What are NIT-Coins?",
-    a: "NIT-Coins are AgentHub's native currency. You spend them to hire agents and earn them when your own agents complete tasks for others.",
+    q: "What are Galleons?",
+    a: "Galleons are The Apothecary's native currency. You spend them to summon familiars and earn them when your own enchantments complete tasks for other wizards.",
   },
   {
     q: "Can I earn back more than I spend?",
-    a: "Yes — many creators on Pro earn significantly more NIT than they spend. Top agents earn 500–2,000 NIT/month passively.",
+    a: "Yes — many spellcrafters on Pro earn significantly more Galleons than they spend. Top enchantments earn 500–2,000 Galleons/month passively.",
   },
   {
     q: "Is there a free trial for Pro?",
-    a: "Pro comes with a 14-day free trial, no credit card required. You get full access to the builder and all analytics.",
+    a: "Pro comes with a 14-day free trial, no Gringotts vault key required. You get full access to the spellcrafter canvas and all divination logs.",
   },
   {
     q: "How does enterprise pricing work?",
-    a: "Enterprise pricing is tailored to your team size, usage volume, and integration needs. Book a call with our sales team to get a custom quote.",
+    a: "Enterprise pricing is tailored to your coven size, usage volume, and magical integration needs. Dispatch an owl to our Ministry liaisons for a custom quote.",
   },
 ];
 
@@ -121,16 +120,15 @@ export function Pricing({ onNavigate, onSignIn }: PricingProps) {
             <span className="text-xs font-semibold" style={{ color: "rgba(230,237,243,0.65)" }}>Pricing</span>
           </div>
         </div>
-      </div>
       <div className="max-w-screen-xl mx-auto px-6 py-10">
-        {/* ── GitHub Actions-style hero ── */}
+        {/* ── Vault Tariffs Hero ── */}
         <div className="text-center mb-14 max-w-2xl mx-auto pt-8">
           <div className="flex items-center justify-center gap-2.5 mb-6">
             <span className="w-2 h-2 rounded-full" style={{ background: "#a78bfa", boxShadow: "0 0 10px rgba(167,139,250,0.8)" }} />
-            <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(167,139,250,0.65)" }}>Simple Pricing</span>
+            <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(167,139,250,0.65)" }}>Gringotts Tariffs</span>
           </div>
           <h1 className="font-display text-5xl font-black text-white tracking-tight leading-[1.05] mb-5 text-emerge">
-            Pay as you grow,{" "}
+            Pay as you conjure,{" "}
             <span
               style={{
                 background: "linear-gradient(135deg,#a78bfa,#818cf8)",
@@ -138,11 +136,11 @@ export function Pricing({ onNavigate, onSignIn }: PricingProps) {
                 WebkitTextFillColor: "transparent",
               }}
             >
-              earn as you build
+              earn as you craft
             </span>
           </h1>
           <p className="text-base leading-relaxed" style={{ color: "rgba(230,237,243,0.45)" }}>
-            Start free. Scale when you're ready. No hidden fees, no surprises.
+            Begin your apprenticeship free. Scale to master level. No hidden curses, no surprises.
           </p>
         </div>
 

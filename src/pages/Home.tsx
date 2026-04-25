@@ -21,25 +21,26 @@ const DROPDOWNS: Record<string, { columns: { heading: string; links: { label: st
   Platform: {
     columns: [
       {
-        heading: "BY FUNCTION",
+        heading: "BY MAGICAL DISCIPLINE",
         links: [
-          { label: "Hire Agents",       sub: "Browse the marketplace" },
-          { label: "Visual Builder",    sub: "Design no-code workflows" },
-          { label: "NIT-Wallet",        sub: "Manage your coin balance" },
-          { label: "Analytics",         sub: "Track agent performance" },
+          { label: "Contract Familiars",   sub: "Browse The Apothecary" },
+          { label: "Spellcrafter Canvas",  sub: "Design intricate enchantments" },
+          { label: "Gringotts Vault",      sub: "Manage your Galleon balance" },
+          { label: "Divination Logs",      sub: "Track familiar performance" },
         ],
       },
       {
         heading: "BY ROLE",
         links: [
-          { label: "For Developers"   },
-          { label: "For Businesses"   },
-          { label: "For Freelancers"  },
-          { label: "For Researchers"  },
+          { label: "For Aurors"         },
+          { label: "For Shopkeepers"    },
+          { label: "For Freelance Cursers" },
+          { label: "For Scholars"       },
         ],
       },
     ],
   },
+  // Keep the Build and Enterprise sections as they are for now, or update their labels if you want!
   Build: {
     columns: [
       {
@@ -264,17 +265,17 @@ function TopNav({ onNavigate, onSignIn }: { onNavigate: (v: View) => void; onSig
 
 /* ───────────────────────── CODE WINDOW ───────────────────────── */
 const CODE_LINES = [
-  { n: 1,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Agent: Refund Finder", c: "#6e7681" }] },
-  { n: 2,  tokens: [{ t: "const ", c: "#ff7b72" }, { t: "agent", c: "#79c0ff" }, { t: " = await ", c: "#e6edf3" }, { t: "AgentHub", c: "#ffa657" }, { t: ".hire({", c: "#e6edf3" }] },
-  { n: 3,  tokens: [{ t: "    name: ", c: "#e6edf3" }, { t: '"RefundFinder"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
-  { n: 4,  tokens: [{ t: "    task: ", c: "#e6edf3" }, { t: '"Scan my Amazon orders for refunds"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
-  { n: 5,  tokens: [{ t: "    deadline: ", c: "#e6edf3" }, { t: '"asap"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 1,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Enchantment: Gringotts Auditor", c: "#6e7681" }] },
+  { n: 2,  tokens: [{ t: "const ", c: "#ff7b72" }, { t: "familiar", c: "#79c0ff" }, { t: " = await ", c: "#e6edf3" }, { t: "Apothecary", c: "#ffa657" }, { t: ".summon({", c: "#e6edf3" }] },
+  { n: 3,  tokens: [{ t: "    name: ", c: "#e6edf3" }, { t: '"VaultAuditor"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 4,  tokens: [{ t: "    directive: ", c: "#e6edf3" }, { t: '"Scour ledgers for missing Galleons"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
+  { n: 5,  tokens: [{ t: "    urgency: ", c: "#e6edf3" }, { t: '"immediate"', c: "#a5d6ff" }, { t: ",", c: "#e6edf3" }] },
   { n: 6,  tokens: [{ t: "});", c: "#e6edf3" }] },
   { n: 7,  tokens: [] },
-  { n: 8,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Agent executes autonomously...", c: "#6e7681" }] },
-  { n: 9,  tokens: [{ t: "agent", c: "#79c0ff" }, { t: ".on(", c: "#e6edf3" }, { t: '"complete"', c: "#a5d6ff" }, { t: ", result => {", c: "#e6edf3" }] },
-  { n: 10, tokens: [{ t: "    console", c: "#79c0ff" }, { t: ".log(result.summary);", c: "#e6edf3" }] },
-  { n: 11, tokens: [{ t: '    // ', c: "#6e7681" }, { t: '→ "Found $142 in refunds. Draft sent."', c: "#34d399" }] },
+  { n: 8,  tokens: [{ t: "// ", c: "#6e7681" }, { t: "Familiar executes autonomously...", c: "#6e7681" }] },
+  { n: 9,  tokens: [{ t: "familiar", c: "#79c0ff" }, { t: ".on(", c: "#e6edf3" }, { t: '"task_complete"', c: "#a5d6ff" }, { t: ", parchment => {", c: "#e6edf3" }] },
+  { n: 10, tokens: [{ t: "    ministry", c: "#79c0ff" }, { t: ".log(parchment.summary);", c: "#e6edf3" }] },
+  { n: 11, tokens: [{ t: '    // ', c: "#6e7681" }, { t: '→ "Discovered 142 Galleons. Owl dispatched."', c: "#34d399" }] },
   { n: 12, tokens: [{ t: "});", c: "#e6edf3" }] },
 ];
 
@@ -323,7 +324,7 @@ function CodeWindow({ style }: { style?: React.CSSProperties }) {
         {/* File tabs */}
         <div className="flex" style={{ background: "#0d1117", borderBottom: "1px solid rgba(48,54,61,0.6)" }}>
           {[
-            { label: "agenthub-quickstart.ts", type: "TS",   tc: "#79c0ff", active: true  },
+            { label: "apothecary-summon.ts", type: "TS",   tc: "#79c0ff", active: true  },
             { label: "agent.config.json",       type: "JSON", tc: "#e3b341", active: false },
             { label: "results.log",              type: "LOG",  tc: "#34d399", active: false },
           ].map((tab) => (
@@ -367,10 +368,10 @@ function CodeWindow({ style }: { style?: React.CSSProperties }) {
 /* ───────────────────────── STATS ───────────────────────── */
 interface StatConfig { label: string; end: number; decimals: number; prefix: string; suffix: string; icon: React.ElementType; }
 const STATS: StatConfig[] = [
-  { label: "AI Agents Available", end: 2400, decimals: 0, prefix: "",  suffix: "+",  icon: Bot          },
-  { label: "Tasks Completed",     end: 98,   decimals: 0, prefix: "",  suffix: "k",  icon: CheckCircle2 },
-  { label: "Avg Rating",          end: 4.9,  decimals: 1, prefix: "",  suffix: "★",  icon: Star         },
-  { label: "Saved for Users",     end: 2.1,  decimals: 1, prefix: "$", suffix: "M",  icon: Coins        },
+  { label: "Familiars Available", end: 2400, decimals: 0, prefix: "",  suffix: "+",  icon: Bot          },
+  { label: "Charms Cast",         end: 98,   decimals: 0, prefix: "",  suffix: "k",  icon: CheckCircle2 },
+  { label: "Avg Wizard Rating",   end: 4.9,  decimals: 1, prefix: "",  suffix: "★",  icon: Star         },
+  { label: "Galleons Recovered",  end: 2.1,  decimals: 1, prefix: "G", suffix: "M",  icon: Coins        },
 ];
 
 function StatCard({ stat, enabled, index }: { stat: StatConfig; enabled: boolean; index: number }) {
@@ -412,20 +413,20 @@ function StatsSection() {
 
 /* ───────────────────────── HOW IT WORKS ───────────────────────── */
 const HOW_IT_WORKS = [
-  { step: "01", title: "Browse the Marketplace", desc: "Explore hundreds of specialized AI agents — from legal review to cold email outreach. Filter by category, rating, or task type.", icon: Store,    color: "#388bfd" },
-  { step: "02", title: "Describe Your Task",       desc: "Fill out a simple form in plain English. No prompting skills, no configuration. Just tell the agent what you need done.",    icon: FileText, color: "#34d399" },
-  { step: "03", title: "Agent Executes End-to-End",desc: "The AI autonomously performs multi-step workflows — browsing the web, reading docs, sending emails — entirely on your behalf.", icon: Cpu,      color: "#a78bfa" },
-  { step: "04", title: "Review Results & Earn",    desc: "Approve results in seconds. If you built an agent, earn NIT-Coins every time someone hires it from the marketplace.",          icon: Coins,    color: "#f59e0b" },
+  { step: "01", title: "Browse The Apothecary", desc: "Explore hundreds of specialized familiars — from binding vows review to automated owl outreach. Filter by discipline or rating.", icon: Store,    color: "#388bfd" },
+  { step: "02", title: "Inscribe Your Intent",       desc: "Draft a simple directive on parchment. No complex spellcraft required. Just declare what you need accomplished.",    icon: FileText, color: "#34d399" },
+  { step: "03", title: "Autonomous Conjuration",desc: "The familiar executes multi-step rituals — scouring archives, cross-referencing tomes, dispatching owls — entirely on your behalf.", icon: Cpu,      color: "#a78bfa" },
+  { step: "04", title: "Review & Prosper",    desc: "Approve the results instantly. If you crafted the enchantment, earn Galleons every time a wizard summons it from the marketplace.",          icon: Coins,    color: "#f59e0b" },
 ];
 
 /* ───────────────────────── FEATURES ───────────────────────── */
 const FEATURES = [
-  { icon: GitBranch, title: "Visual Workflow Builder",  desc: "Drag-and-drop Trigger → Logic → Action nodes. Build custom agents without any code.",                                   color: "#388bfd", tag: "Builder"      },
-  { icon: Shield,    title: "Sandboxed & Verified",     desc: "Every agent runs in an isolated sandbox. You control what data each agent can access — always.",                         color: "#34d399", tag: "Security"     },
-  { icon: Mail,      title: "50+ Real Integrations",    desc: "Agents work inside Gmail, Slack, GitHub, Notion and more. Real actions in your actual accounts.",                        color: "#a78bfa", tag: "Integrations" },
-  { icon: Coins,     title: "NIT-Coin Economy",         desc: "Pay per task. Build an agent once and earn passively every time someone else hires it.",                                  color: "#f59e0b", tag: "Economy"      },
-  { icon: Search,    title: "Context-Aware AI",         desc: "Agents remember across tasks, learn your preferences, and improve with every interaction.",                              color: "#06b6d4", tag: "AI"           },
-  { icon: TrendingUp,title: "Creator Analytics",        desc: "Track usage, earnings, satisfaction scores, and get AI-powered improvement suggestions.",                                color: "#ec4899", tag: "Analytics"    },
+  { icon: GitBranch, title: "Visual Spellcrafter Canvas",  desc: "Drag-and-drop Triggers, Logic, and Actions. Weave intricate enchantments without writing a single line of code.",                                   color: "#388bfd", tag: "Builder"      },
+  { icon: Shield,    title: "Warded & Verified",     desc: "Every familiar operates within a protective ward. You control exactly what ledgers and archives they can access.",                         color: "#34d399", tag: "Security"     },
+  { icon: Mail,      title: "Ministry Integrations",    desc: "Familiars integrate with modern magical infrastructure: Owl Post, Floo Network, and the Daily Prophet archives.",                        color: "#a78bfa", tag: "Integrations" },
+  { icon: Coins,     title: "Galleon Economy",         desc: "Pay per task. Craft a unique spell once and earn passively every time another wizard utilizes your creation.",                                  color: "#f59e0b", tag: "Economy"      },
+  { icon: Search,    title: "Sentient Charms",         desc: "Familiars retain context across tasks, learn your preferences, and improve their accuracy with every conjuration.",                              color: "#06b6d4", tag: "AI"           },
+  { icon: TrendingUp,title: "Divination Analytics",        desc: "Track usage, Galleon yields, satisfaction scores, and receive prophetic suggestions for optimization.",                                color: "#ec4899", tag: "Analytics"    },
 ];
 
 /* ───────────────────────── GLOW CARD ───────────────────────── */
@@ -570,9 +571,9 @@ export function Home({ onNavigate, onSignIn }: HomeProps) {
               className="font-display font-extrabold tracking-tight mb-8"
               style={{ fontSize: "clamp(3rem,6.8vw,5.2rem)", lineHeight: 1.04, letterSpacing: "-0.03em" }}
             >
-              <span style={{ color: "#e6edf3" }}>The future of getting</span><br />
+              <span style={{ color: "#e6edf3" }}>Modern spellcraft for</span><br />
               <span style={{ background: "linear-gradient(180deg,#e6edf3 0%,#b3d4f5 40%,#58a6ff 100%)", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent", backgroundClip: "text" }}>
-                work done with AI
+                the automated wizard
               </span>
             </motion.h1>
 
@@ -580,7 +581,7 @@ export function Home({ onNavigate, onSignIn }: HomeProps) {
             <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.7, delay: 0.25, ease: [0.23, 1, 0.32, 1] }}
               className="text-[17px] leading-relaxed mb-12 max-w-2xl mx-auto" style={{ color: "rgba(139,148,158,0.9)" }}
             >
-              Hire specialized AI agents to handle any task end-to-end — from refund claims to legal review to code audits. Build your own agent and earn. Everything on one platform.
+              Summon specialized familiars to handle your tasks end-to-end — from vault audits to Ministry law review. Weave your own enchantments and earn Galleons passively.
             </motion.p>
 
             {/* Email + CTA */}
@@ -717,14 +718,14 @@ export function Home({ onNavigate, onSignIn }: HomeProps) {
             >
               <Zap className="w-8 h-8 text-white" />
             </motion.div>
-            <h2 className="font-display font-bold text-white mb-4" style={{ fontSize: "clamp(1.7rem,4vw,2.6rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}>Ready to hire your first agent?</h2>
-            <p className="text-[15px] mb-10 max-w-md mx-auto" style={{ color: "#6e7681", lineHeight: 1.75 }}>Join thousands of professionals reclaiming hours every week. Your first task is just 10 NIT-Coins.</p>
+            <h2 className="font-display font-bold text-white mb-4" style={{ fontSize: "clamp(1.7rem,4vw,2.6rem)", lineHeight: 1.08, letterSpacing: "-0.022em" }}>Ready to summon your first familiar?</h2>
+            <p className="text-[15px] mb-10 max-w-md mx-auto" style={{ color: "#6e7681", lineHeight: 1.75 }}>Join thousands of wizards reclaiming hours every week. Your first automated task requires merely 10 Galleons.</p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("marketplace")} className="btn-primary-gh flex items-center gap-2.5 px-8 py-3.5 rounded-lg text-[14px] font-semibold text-white">
-                <Store className="w-4 h-4" /> Explore Marketplace <ArrowRight className="w-4 h-4" />
+                <Store className="w-4 h-4" /> Explore The Apothecary <ArrowRight className="w-4 h-4" />
               </motion.button>
               <motion.button whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }} onClick={() => onNavigate("builder")} className="btn-secondary-gh flex items-center gap-2.5 px-8 py-3.5 rounded-lg text-[14px] font-semibold" style={{ color: "rgba(230,237,243,0.85)" }}>
-                <Wrench className="w-4 h-4" /> Build &amp; Earn
+                <Wrench className="w-4 h-4" /> Spellcraft &amp; Earn
               </motion.button>
             </div>
           </div>

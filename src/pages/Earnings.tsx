@@ -1,15 +1,15 @@
 import { motion } from "framer-motion";
 import {
-  Coins, TrendingUp, ArrowUpRight, ArrowDownRight, Wallet, Gift, Download,
+  Coins, TrendingUp, ArrowUpRight, ArrowDownRight, Archive, Sparkles, Download,
 } from "lucide-react";
 
 const TRANSACTIONS = [
-  { type: "credit", label: "Task completed: Refund Finder sale",   amount: "+15 NIT", time: "2h ago",  hash: "0x4a2f" },
-  { type: "debit",  label: "Hired: Code Reviewer",                  amount: "-20 NIT", time: "5h ago",  hash: "0x9b1c" },
-  { type: "credit", label: "Task completed: PR Ghostwriter sale",   amount: "+25 NIT", time: "1d ago",  hash: "0x3e7a" },
-  { type: "credit", label: "Referral bonus",                         amount: "+50 NIT", time: "2d ago",  hash: "0xf12d" },
-  { type: "debit",  label: "Hired: Syllabus AI",                    amount: "-10 NIT", time: "3d ago",  hash: "0x8c0e" },
-  { type: "credit", label: "Task completed: DataWhiz sale",         amount: "+18 NIT", time: "4d ago",  hash: "0x2b5f" },
+  { type: "credit", label: "Commission: Gringotts Auditor",         amount: "+15 Galleons", time: "2h ago",  hash: "0x4a2f" },
+  { type: "debit",  label: "Contracted: Rune Decipherer",           amount: "-20 Galleons", time: "5h ago",  hash: "0x9b1c" },
+  { type: "credit", label: "Commission: Quick-Quotes Quill",        amount: "+25 Galleons", time: "1d ago",  hash: "0x3e7a" },
+  { type: "credit", label: "Merlin Order Stipend (Referral)",       amount: "+50 Galleons", time: "2d ago",  hash: "0xf12d" },
+  { type: "debit",  label: "Contracted: Time-Turner Scheduler",     amount: "-10 Galleons", time: "3d ago",  hash: "0x8c0e" },
+  { type: "credit", label: "Commission: Arithmancy Analyzer",       amount: "+18 Galleons", time: "4d ago",  hash: "0x2b5f" },
 ];
 
 export function Earnings() {
@@ -49,17 +49,17 @@ export function Earnings() {
         </div>
       </div>
 
-      {/* ── GitHub Actions-style hero ── */}
+      {/* ── Vault Hero ── */}
       <div className="max-w-screen-xl mx-auto px-6 pt-14 pb-10 text-center relative z-10">
         <div className="flex items-center justify-center gap-2.5 mb-5">
           <span className="w-2 h-2 rounded-full" style={{ background: "#f59e0b", boxShadow: "0 0 10px rgba(245,158,11,0.8)" }} />
-          <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(245,158,11,0.65)" }}>NIT-Coin Wallet</span>
+          <span className="text-[11px] font-bold tracking-[0.22em] uppercase" style={{ color: "rgba(245,158,11,0.65)" }}>Gringotts Vault Ledger</span>
         </div>
         <h1 className="font-display text-5xl font-black text-white tracking-tight leading-[1.05] mb-5 text-emerge">
-          Your earnings,<br />fully transparent
+          Your vault balance,<br />crystal clear
         </h1>
         <p className="text-base leading-relaxed max-w-lg mx-auto" style={{ color: "rgba(230,237,243,0.45)" }}>
-          Track every credit, sale, and payout. Your NIT balance, always in sync.
+          Track every deposit, commission, and withdrawal. Your Galleon balance, protected by ancient enchantments.
         </p>
       </div>
 
@@ -88,19 +88,19 @@ export function Earnings() {
                   className="w-11 h-11 rounded-xl flex items-center justify-center font-black text-white text-lg"
                   style={{ background: "linear-gradient(135deg,#f59e0b,#f97316)", boxShadow: "0 0 20px rgba(245,158,11,0.35)" }}
                 >
-                  N
+                  G
                 </div>
                 <div>
-                  <p className="text-xs font-medium" style={{ color: "rgba(230,237,243,0.45)" }}>Total Balance</p>
-                  <p className="text-xs font-semibold" style={{ color: "#f59e0b" }}>NIT-Coins</p>
+                  <p className="text-xs font-medium" style={{ color: "rgba(230,237,243,0.45)" }}>Vault Balance</p>
+                  <p className="text-xs font-semibold" style={{ color: "#f59e0b" }}>Galleons</p>
                 </div>
               </div>
               <p className="font-display text-4xl font-black text-white mb-2">
-                2,847 <span className="text-2xl" style={{ color: "#f59e0b" }}>NIT</span>
+                2,847 <span className="text-2xl" style={{ color: "#f59e0b" }}>G</span>
               </p>
               <div className="flex items-center gap-1.5 text-xs" style={{ color: "#34d399" }}>
                 <TrendingUp className="w-3.5 h-3.5" />
-                <span>+127 NIT this week</span>
+                <span>+127 G this week</span>
               </div>
             </div>
             <div className="flex gap-2 mt-1">
@@ -131,10 +131,10 @@ export function Earnings() {
         {/* Stats grid */}
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
           {[
-            { label: "Total Earned",  value: "4,210 NIT", icon: ArrowUpRight,  color: "#34d399", change: "+22%"        },
-            { label: "Total Spent",   value: "1,363 NIT", icon: ArrowDownRight, color: "#f43f5e", change: "-8%"         },
-            { label: "Agents Built",  value: "2",          icon: Wallet,         color: "#818cf8", change: "Active"      },
-            { label: "Referrals",     value: "6",           icon: Gift,           color: "#06b6d4", change: "+50 NIT bonus" },
+            { label: "Total Accumulated", value: "4,210 G", icon: ArrowUpRight,  color: "#34d399", change: "+22%"        },
+            { label: "Total Contracted",  value: "1,363 G", icon: ArrowDownRight, color: "#f43f5e", change: "-8%"         },
+            { label: "Familiars Built",   value: "2",       icon: Archive,        color: "#818cf8", change: "Active"      },
+            { label: "Referrals",         value: "6",       icon: Sparkles,       color: "#06b6d4", change: "+50 G bonus" },
           ].map((card, i) => {
             const Icon = card.icon;
             return (

@@ -11,7 +11,7 @@ import { Earnings } from "@/pages/Earnings";
 import { Pricing } from "@/pages/Pricing";
 import { SignInModal } from "@/components/SignInModal";
 import "@xyflow/react/dist/style.css";
-
+import { PageLoader } from "@/components/PageLoader"; // <-- Add this import
 const queryClient = new QueryClient();
 
 export type View =
@@ -24,8 +24,22 @@ export type View =
 
 function AppContent() {
   const [activeView, setActiveView] = useState<View>("home");
+  const [isLoading, setIsLoading] = useState(false); // <-- New loading state
   const [signInOpen, setSignInOpen] = useState(false);
   const [signInMode, setSignInMode] = useState<"signin" | "signup">("signin");
+
+  // <-- New Custom Navigation Handler -->
+  const handleNavigate = (newView: View) => {
+    if (newView === activeView) return; // Don't reload if already on the page
+
+    setIsLoading(true); // Fade in the loading screen
+
+    // Wait 1.5 seconds for the magic animation, then swap the view
+    setTimeout(() => {
+      setActiveView(newView);
+      setIsLoading(false);
+    }, 1500); 
+  };
 
   const openSignIn = (mode: "signin" | "signup" = "signin") => {
     setSignInMode(mode);
@@ -38,14 +52,14 @@ function AppContent() {
   const views = useMemo(
     () => ({
       home: (
-        <Home onNavigate={setActiveView} onSignIn={openSignIn} />
+        <Home onNavigate={handleNavigate} onSignIn={openSignIn} /> // <-- Updated
       ),
       marketplace: <Marketplace />,
       "my-agents": <MyAgents />,
       builder: <Builder />,
       earnings: <Earnings />,
       pricing: (
-        <Pricing onNavigate={setActiveView} onSignIn={openSignIn} />
+        <Pricing onNavigate={handleNavigate} onSignIn={openSignIn} /> // <-- Updated
       ),
     }),
     [activeView]
@@ -53,11 +67,14 @@ function AppContent() {
 
   return (
     <div className="flex flex-col h-screen w-screen overflow-hidden bg-[#0a0c12]">
+      {/* Magical Loading Overlay */}
+      <PageLoader isVisible={isLoading} /> 
+
       {/* Navigation */}
       {!isHome && (
         <AppNav
           activeView={activeView}
-          onNavigate={setActiveView}
+          onNavigate={handleNavigate} // <-- Updated to handleNavigate
           onSignIn={openSignIn}
         />
       )}
